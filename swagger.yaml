@@ -1,0 +1,913 @@
+swagger: "2.0"
+info:
+  title: FileBrowser API (subset)
+  description: Subset of FileBrowser API — /api/users, /api/resources, /api/raw
+  contact: {}
+definitions:
+  http.MoveCopyItem:
+    properties:
+      fromPath:
+        type: string
+      fromSource:
+        type: string
+      message:
+        type: string
+      toPath:
+        type: string
+      toSource:
+        type: string
+    type: object
+  http.MoveCopyRequest:
+    properties:
+      action:
+        description: '"copy", "move", or "rename"'
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/http.MoveCopyItem'
+        type: array
+      overwrite:
+        description: Overwrite if destination exists
+        type: boolean
+      rename:
+        description: Auto-rename if destination exists
+        type: boolean
+    type: object
+  http.MoveCopyResponse:
+    properties:
+      failed:
+        items:
+          $ref: '#/definitions/http.MoveCopyItem'
+        type: array
+      succeeded:
+        items:
+          $ref: '#/definitions/http.MoveCopyItem'
+        type: array
+    type: object
+  iteminfo.ExtendedItemInfo:
+    properties:
+      hasPreview:
+        description: whether the file has a thumbnail preview
+        type: boolean
+      hidden:
+        description: whether the file is hidden
+        type: boolean
+      isShared:
+        description: whether the file or folder is shared
+        type: boolean
+      metadata:
+        allOf:
+        - $ref: '#/definitions/iteminfo.MediaMetadata'
+        description: optional media metadata (audio/video only)
+      modified:
+        description: modification time
+        type: string
+      name:
+        description: name of the file
+        type: string
+      size:
+        description: length in bytes for regular files
+        type: integer
+      type:
+        description: type of the file, either "directory" or a file mimetype
+        type: string
+    type: object
+  iteminfo.FileInfo:
+    properties:
+      files:
+        description: files in the directory with optional metadata
+        items:
+          $ref: '#/definitions/iteminfo.ExtendedItemInfo'
+        type: array
+      folders:
+        description: folders in the directory
+        items:
+          $ref: '#/definitions/iteminfo.ItemInfo'
+        type: array
+      hasPreview:
+        description: whether the file has a thumbnail preview
+        type: boolean
+      hidden:
+        description: whether the file is hidden
+        type: boolean
+      isShared:
+        description: whether the file or folder is shared
+        type: boolean
+      modified:
+        description: modification time
+        type: string
+      name:
+        description: name of the file
+        type: string
+      path:
+        description: path scoped to the associated index
+        type: string
+      size:
+        description: length in bytes for regular files
+        type: integer
+      type:
+        description: type of the file, either "directory" or a file mimetype
+        type: string
+    type: object
+  iteminfo.ItemInfo:
+    properties:
+      hasPreview:
+        description: whether the file has a thumbnail preview
+        type: boolean
+      hidden:
+        description: whether the file is hidden
+        type: boolean
+      isShared:
+        description: whether the file or folder is shared
+        type: boolean
+      modified:
+        description: modification time
+        type: string
+      name:
+        description: name of the file
+        type: string
+      size:
+        description: length in bytes for regular files
+        type: integer
+      type:
+        description: type of the file, either "directory" or a file mimetype
+        type: string
+    type: object
+  iteminfo.MediaMetadata:
+    properties:
+      album:
+        description: album name
+        type: string
+      albumArt:
+        description: album art image data (automatically base64-encoded in JSON)
+        items:
+          type: integer
+        type: array
+      artist:
+        description: track artist
+        type: string
+      duration:
+        description: duration in seconds
+        type: integer
+      genre:
+        description: music/video genre
+        type: string
+      title:
+        description: track/video title
+        type: string
+      track:
+        description: track number
+        type: integer
+      year:
+        description: release year
+        type: integer
+    type: object
+  users.AuthToken:
+    properties:
+      Permissions:
+        $ref: '#/definitions/users.Permissions'
+      belongsTo:
+        type: integer
+      expiresAt:
+        type: integer
+      issuedAt:
+        type: integer
+      key:
+        description: for backward compatibility
+        type: string
+      name:
+        type: string
+      token:
+        type: string
+    type: object
+  users.FileLoading:
+    properties:
+      clearAll:
+        type: boolean
+      downloadChunkSizeMb:
+        type: integer
+      maxConcurrentUpload:
+        type: integer
+      uploadChunkSizeMb:
+        type: integer
+    type: object
+  users.LoginMethod:
+    enum:
+    - password
+    - proxy
+    - oidc
+    - ldap
+    - jwt
+    type: string
+    x-enum-varnames:
+    - LoginMethodPassword
+    - LoginMethodProxy
+    - LoginMethodOidc
+    - LoginMethodLdap
+    - LoginMethodJwt
+  users.Permissions:
+    properties:
+      admin:
+        description: allow admin access
+        type: boolean
+      api:
+        description: allow api access
+        type: boolean
+      create:
+        description: allow creating or uploading files
+        type: boolean
+      delete:
+        description: allow deleting files
+        type: boolean
+      download:
+        description: allow downloading files
+        type: boolean
+      modify:
+        description: allow modifying files
+        type: boolean
+      realtime:
+        description: allow realtime updates
+        type: boolean
+      share:
+        description: allow sharing files
+        type: boolean
+    type: object
+  users.Preview:
+    properties:
+      audio:
+        description: show thumbnail preview image for audio files
+        type: boolean
+      autoplayMedia:
+        description: autoplay media files in preview
+        type: boolean
+      defaultMediaPlayer:
+        description: disable html5 media player and use the default media player
+        type: boolean
+      disableHideSidebar:
+        description: disable the hide sidebar preview for previews and editors
+        type: boolean
+      folder:
+        description: show thumbnail preview image for folder files
+        type: boolean
+      image:
+        description: show thumbnail preview image for image files
+        type: boolean
+      models:
+        description: show live thumbnails for 3D models files
+        type: boolean
+      motionVideoPreview:
+        description: show multiple frames for videos in thumbnail preview when hovering
+        type: boolean
+      office:
+        description: show thumbnail preview image for office files
+        type: boolean
+      popup:
+        description: show larger popup preview when hovering over thumbnail
+        type: boolean
+      video:
+        description: show thumbnail preview image for video files
+        type: boolean
+    type: object
+  users.SidebarLink:
+    properties:
+      category:
+        description: 'Category type: "source", "source-link", "share", "tool", "custom",
+          etc.'
+        type: string
+      icon:
+        description: Material icon name
+        type: string
+      name:
+        description: Display name of the link
+        type: string
+      sourceName:
+        description: Source identifier for source-type links
+        type: string
+      target:
+        description: Target path/URL for the link (relative for source/share)
+        type: string
+    type: object
+  users.Sorting:
+    properties:
+      asc:
+        type: boolean
+      by:
+        type: string
+    type: object
+  users.SourceScope:
+    properties:
+      name:
+        type: string
+      scope:
+        type: string
+    type: object
+  users.User:
+    properties:
+      apiKeys:
+        additionalProperties:
+          $ref: '#/definitions/users.AuthToken'
+        description: 'deprecated: use Tokens instead'
+        type: object
+      customTheme:
+        description: Name of theme to use chosen from custom themes config.
+        type: string
+      darkMode:
+        description: should dark mode be enabled
+        type: boolean
+      dateFormat:
+        description: when false, the date is relative, when true, the date is an exact
+          timestamp
+        type: boolean
+      debugOffice:
+        description: debug onlyoffice editor
+        type: boolean
+      deleteAfterArchive:
+        description: delete source files after successful creation/extraction of archives
+        type: boolean
+      deleteWithoutConfirming:
+        description: delete files without confirmation
+        type: boolean
+      disableOfficePreviewExt:
+        description: deprecated
+        type: string
+      disableOnlyOfficeExt:
+        description: deprecated
+        type: string
+      disablePreviewExt:
+        description: space separated list of file extensions to disable preview for
+        type: string
+      disableQuickToggles:
+        description: disable the quick toggles in the sidebar
+        type: boolean
+      disableSearchOptions:
+        description: disable the search options in the search bar
+        type: boolean
+      disableSettings:
+        type: boolean
+      disableUpdateNotifications:
+        description: disable update notifications
+        type: boolean
+      disableViewingExt:
+        description: space separated list of file extensions to disable viewing for
+        type: string
+      editorQuickSave:
+        description: show quick save button in editor
+        type: boolean
+      fileLoading:
+        allOf:
+        - $ref: '#/definitions/users.FileLoading'
+        description: upload and download settings
+      gallerySize:
+        description: 0-9 - the size of the gallery thumbnails
+        type: integer
+      hideFilesInTree:
+        description: hide files in the sidebar tree navigation, when true, will show
+          only directories.
+        type: boolean
+      hideSidebarFileActions:
+        description: hide the file actions in the sidebar
+        type: boolean
+      id:
+        type: integer
+      locale:
+        description: 'language to use: eg. de, en, or fr'
+        type: string
+      lockPassword:
+        type: boolean
+      loginMethod:
+        $ref: '#/definitions/users.LoginMethod'
+      otpEnabled:
+        description: true if TOTP is enabled, false otherwise
+        type: boolean
+      password:
+        type: string
+      perm:
+        allOf:
+        - $ref: '#/definitions/users.Permissions'
+        description: legacy for migration purposes... og filebrowser has perm attribute
+      permissions:
+        $ref: '#/definitions/users.Permissions'
+      preview:
+        $ref: '#/definitions/users.Preview'
+      quickDownload:
+        description: show icon to download in one click
+        type: boolean
+      scope:
+        type: string
+      scopes:
+        items:
+          $ref: '#/definitions/users.SourceScope'
+        type: array
+      showFirstLogin:
+        type: boolean
+      showHidden:
+        description: show hidden files in the UI. On windows this includes files starting
+          with a dot and windows hidden files
+        type: boolean
+      showSelectMultiple:
+        description: show select multiple files on desktop
+        type: boolean
+      sidebarLinks:
+        description: customizable sidebar links
+        items:
+          $ref: '#/definitions/users.SidebarLink'
+        type: array
+      singleClick:
+        description: open directory on single click, also enables middle click to
+          open in new tab
+        type: boolean
+      sorting:
+        $ref: '#/definitions/users.Sorting'
+      stickySidebar:
+        description: keep sidebar open when navigating
+        type: boolean
+      themeColor:
+        description: 'theme color to use: eg. #ff0000, or var(--red), var(--purple),
+          etc'
+        type: string
+      tokens:
+        additionalProperties:
+          $ref: '#/definitions/users.AuthToken'
+        type: object
+      totpNonce:
+        type: string
+      totpSecret:
+        type: string
+      username:
+        type: string
+      version:
+        type: integer
+      viewMode:
+        description: 'view mode to use: eg. normal, list, grid, or compact'
+        type: string
+    type: object
+paths:
+  /api/users:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a user identified by their ID.
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a user by ID
+      tags:
+      - Users
+    get:
+      consumes:
+      - application/json
+      description: Returns a user's details based on their ID, or all users if no
+        id is provided.
+      parameters:
+      - description: User ID or 'self'
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User details or list of users
+          schema:
+            $ref: '#/definitions/users.User'
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Retrieve a user by ID
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Adds a new user to the system.
+      parameters:
+      - description: User data to create a new user
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/users.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created user
+          schema:
+            $ref: '#/definitions/users.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new user
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Updates the details of a user identified by ID.
+      parameters:
+      - description: user ID to update
+        in: query
+        name: id
+        type: string
+      - description: usename to update
+        in: query
+        name: id
+        type: string
+      - description: User data to update
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/users.User'
+      responses:
+        "204":
+          description: No Content - User updated successfully
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a user's details
+      tags:
+      - Users
+  /api/resources:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a resource located at the specified path.
+      parameters:
+      - description: Path to the resource
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: Source name for the desired source, default is used if not provided
+        in: query
+        name: source
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Resource deleted successfully
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Resource not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a resource
+      tags:
+      - Resources
+    get:
+      consumes:
+      - application/json
+      description: Returns metadata and optionally file contents for a specified resource
+        path.
+      parameters:
+      - description: Path to the resource
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: Skip extended attributes for faster retrieval, no hasPreview
+        in: query
+        name: skipExtendedAttrs
+        type: string
+      - description: Source name for the desired source, default is used if not provided
+        in: query
+        name: source
+        required: true
+        type: string
+      - description: Include file content if true
+        in: query
+        name: content
+        type: string
+      - description: Extract audio/video metadata if true
+        in: query
+        name: metadata
+        type: string
+      - description: Optional checksum validation
+        in: query
+        name: checksum
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Resource metadata
+          schema:
+            $ref: '#/definitions/iteminfo.FileInfo'
+        "404":
+          description: Resource not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get resource information
+      tags:
+      - Resources
+    patch:
+      consumes:
+      - application/json
+      description: Performs move, copy, or rename operations on multiple resources.
+        All operations are performed atomically.
+      parameters:
+      - description: Move/copy request with items and action
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/http.MoveCopyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All operations completed successfully
+          schema:
+            $ref: '#/definitions/http.MoveCopyResponse'
+        "207":
+          description: Partial success - some operations succeeded, some failed
+          schema:
+            $ref: '#/definitions/http.MoveCopyResponse'
+        "400":
+          description: Bad request - invalid JSON or parameters
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Resource not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: All operations failed
+          schema:
+            $ref: '#/definitions/http.MoveCopyResponse'
+      summary: Move, copy, or rename resources
+      tags:
+      - Resources
+    post:
+      consumes:
+      - application/json
+      description: Creates a new resource or uploads a file at the specified path.
+        Supports file uploads and directory creation.
+      parameters:
+      - description: url encoded destination path where to place the files inside
+          the destination source
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: Name for the desired filebrowser destination source name, default
+          is used if not provided
+        in: query
+        name: source
+        required: true
+        type: string
+      - description: Override existing file if true
+        in: query
+        name: override
+        type: boolean
+      - description: Explicitly specify if the resource is a directory
+        in: query
+        name: isDir
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Resource created successfully
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Resource not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict - Resource already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create or upload a resource
+      tags:
+      - Resources
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing file at the specified path.
+      parameters:
+      - description: Destination path where to place the files inside the destination
+          source
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: Source name for the desired source, default is used if not provided
+        in: query
+        name: source
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Resource updated successfully
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Resource not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "405":
+          description: Method not allowed
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a file resource
+      tags:
+      - Resources
+  /api/raw:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Returns the raw content of a file, multiple files, or a directory. Supports downloading files as archives in various formats.
+        This is an alias for /api/resources/download.
+
+        **Filename Encoding:**
+        - The Content-Disposition header will always include both:
+          1. `filename="..."`: An ASCII-safe version of the filename for compatibility.
+          2. `filename*=utf-8"...`: The full UTF-8 encoded filename (RFC 6266/5987) for modern clients.
+
+        **Multiple Files:**
+        - Use repeated query parameters: `?file=file1.txt&file=file2.txt&file=file3.txt`
+        - This supports filenames containing commas and special characters
+      produces:
+      - application/octet-stream
+      parameters:
+      - description: Source name for the files (required)
+        in: query
+        name: source
+        required: true
+        type: string
+      - collectionFormat: csv
+        description: File path (can be repeated for multiple files)
+        in: query
+        items:
+          type: string
+        name: file
+        required: true
+        type: array
+      - description: If true, sets 'Content-Disposition' to 'inline'. Otherwise, defaults
+          to 'attachment'.
+        in: query
+        name: inline
+        type: boolean
+      - description: "Compression algorithm for archiving multiple files or directories.\
+          \ Options: 'zip' and 'tar.gz'. Default is 'zip'."
+        in: query
+        name: algo
+        type: string
+      responses:
+        "200":
+          description: Raw file or directory content, or archive for multiple files
+          schema:
+            type: file
+        "202":
+          description: Modify permissions required
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request path
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: File or directory not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Download raw content of a file, multiple files, or directory
+      tags:
+      - Resources
