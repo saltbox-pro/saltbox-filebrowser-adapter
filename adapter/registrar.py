@@ -76,7 +76,9 @@ async def register(service: ServiceSchema) -> None:
             if not await check_gateway(client):
                 logger.warning(
                     'Gateway not ready, retry in %ss... (attempt %d/%d)',
-                    RETRY_INTERVAL_SEC, attempt, MAX_RETRIES,
+                    RETRY_INTERVAL_SEC,
+                    attempt,
+                    MAX_RETRIES,
                 )
                 await asyncio.sleep(RETRY_INTERVAL_SEC)
                 continue

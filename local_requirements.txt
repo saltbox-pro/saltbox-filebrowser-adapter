@@ -1,0 +1,7 @@
+# Dependencies from Salt.Box Team server.
+# - Prefer tag or commit hash over branch to specify version.
+# - Prefer long hash over short hash for pip efficiency.
+
+saltbox-sdk @ git+https://dev.saltbox.pro/saltbox/saltbox-sdk/@25baa016f51f534953d759cc710800196a024932
+
+# vi: ft=requirements
