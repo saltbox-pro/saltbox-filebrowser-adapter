@@ -17,7 +17,7 @@ METHOD_TO_ACTION = {
     'delete': 'write',
 }
 
-READ_CACHE_TTL = 60
+READ_CACHE_TTL = 0
 
 
 def load_swagger(path: str) -> dict[str, Any]:
