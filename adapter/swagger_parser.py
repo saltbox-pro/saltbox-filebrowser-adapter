@@ -17,14 +17,6 @@ METHOD_TO_ACTION = {
     'delete': 'write',
 }
 
-METHOD_TO_POLICY = {
-    'get': 'public',
-    'post': 'default',
-    'put': 'default',
-    'patch': 'default',
-    'delete': 'default',
-}
-
 READ_CACHE_TTL = 60
 
 
@@ -50,7 +42,7 @@ def parse_endpoints(swagger: dict) -> list[ServiceEndpoint]:
 
             method_lower = method.lower()
             action = METHOD_TO_ACTION.get(method_lower, 'read')
-            policy = METHOD_TO_POLICY.get(method_lower, 'default')
+            policy = 'public'
             cache_ttl = READ_CACHE_TTL if action == 'read' else 0
 
             endpoints.append(
