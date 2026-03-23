@@ -42,4 +42,5 @@ LABEL name='saltbox-filebrowser-adapter' version='0.1.0'
 RUN \
   --mount=type=bind,target=/mnt/saltbox-filebrowser-adapter/,readwrite \
   --mount=type=cache,target=/root/.cache/pip/ \
-  pip3 install /mnt/saltbox-filebrowser-adapter/
+  pip3 install -r /mnt/saltbox-filebrowser-adapter/local_requirements.txt \
+  && pip3 install /mnt/saltbox-filebrowser-adapter/
