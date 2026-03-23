@@ -35,11 +35,11 @@ def build_service_schema(endpoints: list[ServiceEndpoint]) -> ServiceSchema:
     )
 
     api_url = f'{SETTINGS.server_scheme}://{SETTINGS.server_outer_socket.strip("/")}/api/{SETTINGS.service_name}'
-
+    static_url = f'{SETTINGS.server_scheme}://{SETTINGS.server_outer_socket.strip("/")}/static/filebrowser'
     front_config = ServiceFrontendConfig(
         service_name=SETTINGS.service_name,
-        url=api_url,
-        static_host=None,
+        url=static_url,
+        static_host='saltbox-filesystem-frontend',
         env=ServiceFrontendEnv(
             api_base_path=api_url,
             ws_server_url=None,
