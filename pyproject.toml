@@ -1,6 +1,6 @@
 [project]
 name = "saltbox-filebrowser-adapter"
-version = "0.1.0"
+version = "0.2.0"
 description = "Thin adapter to register FileBrowser in Saltbox Gateway"
 requires-python = ">=3.12"
 license = "Apache-2.0"
