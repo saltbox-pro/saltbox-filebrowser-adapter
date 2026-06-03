@@ -21,4 +21,5 @@ htmlcov/
 /.idea
 
 # Other
+/.gitlab-ci-local
 /_*
