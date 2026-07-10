@@ -11,7 +11,6 @@ from saltbox_sdk.discovery_client.schemas import (
     ServiceFrontendEnv,
     ServiceInstance,
     ServiceSchema,
-    ServiceType,
 )
 
 logger = logging.getLogger(__name__)
@@ -51,7 +50,7 @@ def build_service_schema(endpoints: list[ServiceEndpoint]) -> ServiceSchema:
         title=SETTINGS.service_title,
         description=SETTINGS.service_description,
         vendor=SETTINGS.service_vendor,
-        type=ServiceType.THIRD_PARTY,
+        type='third-party',
         instances=[instance],
         enabled=True,
         load_balancing_strategy=ProxyBalancingStrategy.ROUND_ROBIN,

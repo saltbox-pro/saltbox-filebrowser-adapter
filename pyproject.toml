@@ -5,103 +5,47 @@ description = "Thin adapter to register FileBrowser in Saltbox Gateway"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 dependencies = [
-    "httpx~=0.27.0",
-    "pydantic~=2.11.3",
-    "pydantic-settings~=2.9.1",
-    "pyyaml~=6.0",
+  "httpx~=0.27.0",
+  "pydantic~=2.11.3",
+  "pydantic-settings~=2.9.1",
+  "pyyaml~=6.0",
+  "saltbox-sdk @ git+https://dev.saltbox.pro/saltbox/saltbox-sdk@9d81d1ae83c126d0e9065dd5df994e0390af0c5e",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "mypy>=1.15.0",
-    "ruff",
-    "types-PyYAML",
-    "pytest>=8.3.4",
-    "pytest-asyncio>=0.25.3",
-    "pytest-cov>=6.0.0",
-    "pytest-mock>=3.14.0",
-    "pytest-sugar>=1.0.0",
+  "mypy>=1.15.0",
+  "ruff",
+  "types-PyYAML",
+  "pytest>=8.3.4",
+  "pytest-asyncio>=0.25.3",
+  "pytest-cov>=6.0.0",
+  "pytest-mock>=3.14.0",
+  "pytest-sugar>=1.0.0",
 ]
 
 [build-system]
 requires = ["setuptools>=75.1.0"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools.packages.find]
-include = ["adapter"]
-where = ["."]
-
-[tool.ruff]
-target-version = "py312"
-line-length = 120
-src = ["adapter"]
-extend-exclude = ["docs", "env", "__pycache__", "*.egg", "htmlcov"]
-respect-gitignore = true
-unsafe-fixes = false
-
-[tool.ruff.format]
-quote-style = "single"
-docstring-code-format = true
-
-[tool.ruff.lint]
-select = [
-    "B",     # flake8-bugbear
-    "C90",   # mccabe
-    "C4",    # flake8-comprehensions
-    "DTZ",   # flake8-datetimez
-    "EM",    # flake8-errmsg
-    "UP",    # pyupgrade
-    "FA",    # flake8-future-annotations
-    "LOG",   # flake8-logging
-    "PTH",   # flake8-use-pathlib
-    "ASYNC", # flake8-async
-    "G",     # flake8-logging-format
-    "E",     # pycodestyle errors
-    "F",     # pyflakes
-    "I",     # isort
-    "S",     # flake8-bandit
-    "W",     # pycodestyle warnings
-    "N",     # pep8-naming
-    "RUF",   # ruff checks
-    "TD",    # flake8-todo
-]
-ignore = [
-    "E722",  # do not use bare except
-    "ERA",   # do not autoremove commented out code
-    "N818",  # error-suffix-on-exception-name
-    "UP040", # type instead of TypeAlias PEP 695
-    "TD001", # Invalid TODO tag
-    "TD002", # Author name in TODO
-    "TD003", # Found TODO in code
-    "TD004", # Missing colon in TODO
-]
-fixable = ["ALL"]
-unfixable = [
-    "F401",  # Unused import
-    "F841",  # Unused variable
-    "UP035", # Deprecated import
+[tool.coverage.run]
+source = ["adapter"]
+omit = [
+  "main.py",
+  "config.py",
+  "tests/*",
+  "venv/*",
+  ".venv/*",
+  "**/__init__.py",
 ]
 
-[tool.ruff.lint.flake8-quotes]
-docstring-quotes = "single"
-inline-quotes = "single"
-multiline-quotes = "single"
-
-[tool.ruff.lint.pydocstyle]
-convention = "google"
-
-[tool.ruff.lint.per-file-ignores]
-"tests/**/*.*" = ["S101", "DTZ", "EM101", "RUF012", "E712"]
-
-[tool.ruff.lint.isort]
-known-first-party = [
-    "adapter",
-    "saltbox_sdk",
-    "tests",
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+  "if TYPE_CHECKING:",
+  "pragma: no cover",
+  "if __name__ == '__main__':",
 ]
-
-[tool.ruff.lint.mccabe]
-max-complexity = 10
 
 [tool.mypy]
 check_untyped_defs = true
@@ -121,33 +65,90 @@ implicit_reexport = false
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
-mypy_path = '../saltbox-sdk/'
+mypy_path = "../saltbox-sdk/"
 
 [tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "function"
-minversion = "8.0"
 addopts = [
-    "--cov=adapter",
-    "--cov-report=term-missing",
-    "--durations=5",
+  "--cov=adapter",
+  "--cov-report=term-missing",
+  "--durations=5",
 ]
+minversion = "8.0"
 testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"
 
-[tool.coverage.run]
-source = ["adapter"]
-omit = [
-    "main.py",
-    "config.py",
-    "tests/*",
-    "venv/*",
-    ".venv/*",
-    "**/__init__.py",
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+src = ["adapter"]
+extend-exclude = ["docs", "env", "__pycache__", "*.egg", "htmlcov"]
+respect-gitignore = true
+unsafe-fixes = false
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+  "B",  # flake8-bugbear
+  "C90",  # mccabe
+  "C4",  # flake8-comprehensions
+  "DTZ",  # flake8-datetimez
+  "EM",  # flake8-errmsg
+  "UP",  # pyupgrade
+  "FA",  # flake8-future-annotations
+  "LOG",  # flake8-logging
+  "PTH",  # flake8-use-pathlib
+  "ASYNC",  # flake8-async
+  "G",  # flake8-logging-format
+  "E",  # pycodestyle errors
+  "F",  # pyflakes
+  "I",  # isort
+  "S",  # flake8-bandit
+  "W",  # pycodestyle warnings
+  "N",  # pep8-naming
+  "RUF",  # ruff checks
+  "TD",  # flake8-todo
+]
+ignore = [
+  "E722",  # do not use bare except
+  "ERA",  # do not autoremove commented out code
+  "N818",  # error-suffix-on-exception-name
+  "UP040",  # type instead of TypeAlias PEP 695
+  "TD001",  # Invalid TODO tag
+  "TD002",  # Author name in TODO
+  "TD003",  # Found TODO in code
+  "TD004",  # Missing colon in TODO
+]
+fixable = ["ALL"]
+unfixable = [
+  "F401",  # Unused import
+  "F841",  # Unused variable
+  "UP035",  # Deprecated import
 ]
 
-[tool.coverage.report]
-show_missing = true
-exclude_lines = [
-    "if TYPE_CHECKING:",
-    "pragma: no cover",
-    "if __name__ == '__main__':",
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "single"
+inline-quotes = "single"
+multiline-quotes = "single"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.*" = ["S101", "DTZ", "EM101", "RUF012", "E712"]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+  "adapter",
+  "saltbox_sdk",
+  "tests",
 ]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.setuptools.packages.find]
+include = ["adapter"]
+where = ["."]
