@@ -15,7 +15,7 @@ class AdapterSettings(BaseSettings):
     discovery_url: str
 
     service_name: str = 'filebrowser'
-    service_title: str = 'FileBrowser'
+    service_title: str = 'SaltBox FileBrowser'
     service_description: str = 'Third-party file browser service'
     service_vendor: str = 'FileBrowser'
 
