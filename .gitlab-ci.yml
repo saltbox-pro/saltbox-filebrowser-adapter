@@ -9,6 +9,9 @@ include:
   - project: 'saltbox/ci-lib'
     file: 'build-image.yml'
 
+  - project: 'saltbox/ci-lib'
+    file: 'mirror-repo.yml'
+
 
 .lint-job:
   stage: lint
@@ -44,3 +47,8 @@ Build FileBrowser Adapter image:
   extends: .build-image
   variables:
     TARGET: main
+
+
+Mirror Repository:
+  extends: .mirror-repo
+  stage: build
