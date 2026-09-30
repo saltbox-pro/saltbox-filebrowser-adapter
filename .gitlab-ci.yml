@@ -10,12 +10,6 @@ include:
   - project: 'saltbox/ci-lib'
     file: 'build-image.yml'
 
-  - project: 'saltbox/ci-lib'
-    file: 'mirror-repo.yml'
-
-  - project: 'saltbox/ci-lib'
-    file: 'close-github-pr.yml'
-
 
 .lint-job:
   stage: lint
@@ -51,13 +45,3 @@ Build FileBrowser Adapter image:
   extends: .build-image
   variables:
     TARGET: main
-
-
-Mirror Repository:
-  extends: .mirror-repo
-  stage: build
-
-
-Check for GitHub PR to close:
-  extends: .close-github-pr
-  stage: build
