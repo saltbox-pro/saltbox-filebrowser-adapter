@@ -2,3 +2,5 @@
 .dockerignore
 Dockerfile
 build
+.venv
+.env

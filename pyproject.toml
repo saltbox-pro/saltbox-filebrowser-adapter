@@ -1,20 +1,24 @@
 [project]
 name = "saltbox-filebrowser-adapter"
-version = "0.3.0"
+version = "0.4.0"
 description = "Thin adapter to register FileBrowser in Saltbox Gateway"
 requires-python = ">=3.12"
-license = "Apache-2.0"
+license-files = ["LICENSE.txt"]
 dependencies = [
   "httpx~=0.27.0",
   "pydantic~=2.11.3",
   "pydantic-settings~=2.9.1",
   "pyyaml~=6.0",
-  "saltbox-sdk @ git+https://dev.saltbox.pro/saltbox/saltbox-sdk@9d81d1ae83c126d0e9065dd5df994e0390af0c5e",
+
+  # Dependencies from Salt.Box Team server.
+  # - Prefer tag or commit hash over branch to specify version.
+  # - Prefer long hash over short hash for pip efficiency.
+  "saltbox-sdk @ git+https://dev.saltbox.pro/saltbox/saltbox-sdk/@9273c012bdc42dfd511c091c6c43cbefdb35d568",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "mypy>=1.15.0",
+  "mypy>=1.20.0",
   "ruff",
   "types-PyYAML",
   "pytest>=8.3.4",

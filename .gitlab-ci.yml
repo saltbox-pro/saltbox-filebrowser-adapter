@@ -21,7 +21,6 @@ include:
   before_script:
     - mkdir --parents "$APK_CACHE_DIR"
     - apk add --cache-dir "$APK_CACHE_DIR" cargo git
-    - pip3 install -r local_requirements.txt
     - pip3 install -e .[dev]
     - python -V
   cache:
@@ -44,4 +43,4 @@ Build FileBrowser Adapter image:
   stage: build
   extends: .build-image
   variables:
-    TARGET: main
+    TARGET: prod
