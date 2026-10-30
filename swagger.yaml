@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   title: FileBrowser API (subset)
-  description: Subset of FileBrowser API — /api/users, /api/resources, /api/raw
+  description: Subset of FileBrowser API — /api/users, /api/resources, /api/resources/download
   contact: {}
 definitions:
   http.MoveCopyItem:
@@ -447,16 +447,36 @@ definitions:
         description: "view mode to use: eg. normal, list, grid, or compact"
         type: string
     type: object
+  web.BulkDeleteItem:
+    properties:
+      message:
+        type: string
+      path:
+        type: string
+      source:
+        type: string
+    type: object
+  web.BulkDeleteResponse:
+    properties:
+      failed:
+        items:
+          $ref: "#/definitions/web.BulkDeleteItem"
+        type: array
+      succeeded:
+        items:
+          $ref: "#/definitions/web.BulkDeleteItem"
+        type: array
+    type: object
 paths:
   /public/api/users:
     delete:
       consumes:
         - application/json
-      description: Deletes a user identified by their ID.
+      description: Deletes a user identified by their login name.
       parameters:
-        - description: User ID
+        - description: Username
           in: query
-          name: id
+          name: username
           required: true
           type: string
       produces:
@@ -483,12 +503,12 @@ paths:
       consumes:
         - application/json
       description:
-        Returns a user's details based on their ID, or all users if no
-        id is provided.
+        Returns a user's details based on their login name, or all users if
+        no username is provided. Use 'self' for the current user.
       parameters:
-        - description: User ID or 'self'
+        - description: Username or 'self'
           in: query
-          name: id
+          name: username
           type: string
       produces:
         - application/json
@@ -551,18 +571,14 @@ paths:
       summary: Create a new user
       tags:
         - Users
-    put:
+    patch:
       consumes:
         - application/json
-      description: Updates the details of a user identified by ID.
+      description: Updates the details of a user identified by their login name.
       parameters:
-        - description: user ID to update
+        - description: Username to update
           in: query
-          name: id
-          type: string
-        - description: usename to update
-          in: query
-          name: id
+          name: username
           type: string
         - description: User data to update
           in: body
@@ -850,13 +866,60 @@ paths:
       summary: Update a file resource
       tags:
         - Resources
-  /api/raw:
+  /api/resources/bulk:
+    delete:
+      consumes:
+        - application/json
+      description:
+        Deletes multiple resources specified in the request body. Returns
+        a list of succeeded and failed deletions.
+      parameters:
+        - description: Array of items to delete, each with source and path
+          in: body
+          name: items
+          required: true
+          schema:
+            items:
+              $ref: "#/definitions/web.BulkDeleteItem"
+            type: array
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: All resources deleted successfully
+          schema:
+            $ref: "#/definitions/web.BulkDeleteResponse"
+        "207":
+          description: Partial success - some resources deleted, some failed
+          schema:
+            $ref: "#/definitions/web.BulkDeleteResponse"
+        "400":
+          description: Bad request - invalid JSON or empty items array
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error - all deletions failed
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Bulk delete resources
+      tags:
+        - Resources
+  /api/resources/download:
     get:
       consumes:
         - application/json
       description: |-
         Returns the raw content of a file, multiple files, or a directory. Supports downloading files as archives in various formats.
-        This is an alias for /api/resources/download.
 
         **Filename Encoding:**
         - The Content-Disposition header will always include both:
