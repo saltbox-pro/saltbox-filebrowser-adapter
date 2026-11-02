@@ -38,7 +38,7 @@ def build_service_schema(endpoints: list[ServiceEndpoint]) -> ServiceSchema:
     front_config = ServiceFrontendConfig(
         service_name=SETTINGS.service_name,
         url=static_url,
-        static_host='http://saltbox-filesystem-frontend:80',
+        static_host='http://saltbox-filebrowser-frontend:80',
         env=ServiceFrontendEnv(
             api_base_path=api_url,
             ws_server_url=None,
